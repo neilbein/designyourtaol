@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DesignYourTaol — Design Your Coffin in 3D</title>
+<meta name="description" content="A web-based 3D coffin customization and design system. Choose a model, customize every detail, and preview your design instantly in an interactive 3D studio.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css?v=5">
+<link rel="stylesheet" href="css/animations.css?v=5">
+</head>
+<body>
+
+<!-- ================= LOADING SCREEN ================= -->
+<div id="site-loader">
+  <div class="loader-inner">
+    <div class="loader-brand">Design<span>Your</span>Taol</div>
+    <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+  </div>
+</div>
+
+<!-- ================= NAVIGATION ================= -->
+<nav class="nav" aria-label="Primary">
+  <div class="nav-inner">
+    <a href="index.html" class="brand"><span class="brand-mark">DT</span> DesignYourTaol</a>
+    <ul class="nav-links">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#coffins">Coffins</a></li>
+      <li><a href="customize.html">Customize</a></li>
+      <li><a href="#how-it-works">How It Works</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li><a href="notifications.html">Notifications</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="notifications.html" class="nav-notif-btn" aria-label="Notifications" id="nav-notif-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span class="notif-badge" id="notif-badge" style="display:none">0</span>
+      </a>
+      <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ================= HERO ================= -->
+<header class="hero" id="home">
+  <div class="hero-grid-fade"></div>
+  <div class="hero-inner">
+    <div>
+      <span class="eyebrow hero-eyebrow">3D Coffin Customization &amp; Design System</span>
+      <h1>
+        <span class="line"><span>Design Your Coffin.</span></span>
+        <span class="line"><span class="accent-text">See It Before You Choose.</span></span>
+      </h1>
+      <p class="hero-desc">Create a personalized coffin design and experience your choices in an interactive 3D preview — rotate, adjust and review every detail before you decide.</p>
+      <div class="hero-cta">
+        <a href="customize.html" class="btn btn-primary">Start Designing</a>
+        <a href="#coffins" class="btn btn-secondary">Explore Coffins</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><b>6</b><span>Starting Models</span></div>
+        <div class="hero-stat"><b>360°</b><span>Live 3D Preview</span></div>
+        <div class="hero-stat"><b>Real-Time</b><span>Design Updates</span></div>
+      </div>
+    </div>
+    <div class="hero-visual" id="hero-visual">
+      <canvas id="hero-canvas"></canvas>
+      <div class="hero-visual-frame"></div>
+      <div class="hero-visual-badge glass"><span class="pulse-dot"></span> 3D READY</div>
+
+      <!-- Coffin info overlay -->
+      <div class="hero-coffin-info glass">
+        <div class="hero-coffin-meta">
+          <span class="hero-coffin-tagline">Luxury Ceremonial</span>
+          <span class="hero-coffin-name">Premium Gold</span>
+        </div>
+        <span class="hero-coffin-price">&#8369;42,000</span>
+      </div>
+
+      <!-- Color swatches (replace dots) -->
+      <div class="hero-preset-swatches" role="group" aria-label="Choose coffin color">
+        <button class="hero-preset-swatch active" style="--sc:#d4af37" title="Premium Gold" aria-label="Premium Gold"></button>
+        <button class="hero-preset-swatch" style="--sc:#c8a040" title="Royal Heritage" aria-label="Royal Heritage"></button>
+        <button class="hero-preset-swatch" style="--sc:#a8c0d8" title="Modern Serenity" aria-label="Modern Serenity"></button>
+      </div>
+
+    </div>
+  </div>
+  <div class="scroll-cue"><span>Scroll</span><span class="stem"></span></div>
+</header>
+
+<!-- ================= CATALOG ================= -->
+<section class="section" id="coffins">
+  <div class="container">
+    <div class="section-head center reveal">
+      <span class="eyebrow">Catalog</span>
+      <h2 class="section-title">Choose Your Starting Design</h2>
+      <p class="section-sub" style="margin-inline:auto;">Six curated models to start from. Every one of them can be fully customized in the 3D studio.</p>
+    </div>
+    <div class="grid catalog-grid" id="catalog-grid"></div>
+  </div>
+</section>
+
+<!-- ================= HOW IT WORKS ================= -->
+<section class="section" id="how-it-works">
+  <div class="container">
+    <div class="section-head center reveal">
+      <span class="eyebrow">Process</span>
+      <h2 class="section-title">Four Steps From Idea to Design</h2>
+    </div>
+    <div class="grid steps-row" id="how-it-works-grid"></div>
+  </div>
+</section>
+
+<!-- ================= FEATURES ================= -->
+<section class="section">
+  <div class="container">
+    <div class="section-head center reveal">
+      <span class="eyebrow">Capabilities</span>
+      <h2 class="section-title">Everything You Need to Design With Confidence</h2>
+    </div>
+    <div class="grid feature-grid" id="feature-grid"></div>
+  </div>
+</section>
+
+<!-- ================= BEFORE / AFTER ================= -->
+<section class="section">
+  <div class="container">
+    <div class="section-head center reveal">
+      <span class="eyebrow">Why It's Different</span>
+      <h2 class="section-title">From a Manual Process to a Visual One</h2>
+    </div>
+    <div class="grid compare-wrap reveal">
+      <div class="compare-col old">
+        <h4>Traditional Process</h4>
+        <ul id="compare-old-list"></ul>
+      </div>
+      <div class="compare-col new">
+        <h4>DesignYourTaol</h4>
+        <ul id="compare-new-list"></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= BENEFITS ================= -->
+<section class="section">
+  <div class="container">
+    <div class="section-head center reveal">
+      <span class="eyebrow">Impact</span>
+      <h2 class="section-title">Built for Families and Funeral Businesses Alike</h2>
+    </div>
+    <div class="grid benefit-wrap reveal">
+      <div class="benefit-col">
+        <h4>For Customers</h4>
+        <ul class="benefit-list" id="benefits-customer"></ul>
+      </div>
+      <div class="benefit-col">
+        <h4>For the Business</h4>
+        <ul class="benefit-list" id="benefits-business"></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ABOUT ================= -->
+<section class="section" id="about">
+  <div class="container">
+    <div class="grid about-wrap">
+      <div class="reveal">
+        <span class="eyebrow">About DesignYourTaol</span>
+        <h2 class="section-title" style="margin-top:.8rem;">A Digital, Interactive Way to Personalize a Difficult Decision</h2>
+        <p class="section-sub">DesignYourTaol is a web-based 3D coffin customization system designed to transform the traditional manual customization process into a digital, interactive and visual experience.</p>
+        <ul class="about-list">
+          <li><span class="benefit-dot"></span><span>Addresses limited customization and difficulty visualizing the final design</span></li>
+          <li><span class="benefit-dot"></span><span>Reduces miscommunication between families and staff</span></li>
+          <li><span class="benefit-dot"></span><span>Cuts down manual processing, design errors and repeated revisions</span></li>
+        </ul>
+      </div>
+      <div class="about-visual reveal">
+        <svg width="70%" viewBox="0 0 200 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M40 40 C40 30 55 25 65 25 L135 25 C145 25 160 30 160 40 L168 70 C168 82 150 92 130 92 L70 92 C50 92 32 82 32 70 Z" fill="#12191D" stroke="rgba(0,230,118,0.4)" stroke-width="1.5"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FINAL CTA ================= -->
+<section class="section">
+  <div class="container">
+    <div class="final-cta reveal">
+      <span class="eyebrow">Ready When You Are</span>
+      <h2>Your Design Is One Click Away</h2>
+      <p>Open the 3D design studio, choose a starting model, and see your personalized coffin come together in real time.</p>
+      <div class="btn-row">
+        <a href="customize.html" class="btn btn-primary">Start Designing</a>
+        <a href="#coffins" class="btn btn-secondary">Browse Models First</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section class="section" id="contact">
+  <div class="container">
+    <div class="section-head center reveal">
+      <span class="eyebrow">Contact</span>
+      <h2 class="section-title">Talk to Us About Your Design</h2>
+    </div>
+    <div class="grid contact-wrap reveal">
+      <div class="contact-info">
+        <div class="contact-item">
+          <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+          <div><b>Phone</b><span>+63 917 000 1234</span></div>
+        </div>
+        <div class="contact-item">
+          <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M22 6l-10 7L2 6"/></svg></div>
+          <div><b>Email</b><span>hello@designyourtaol.example</span></div>
+        </div>
+        <div class="contact-item">
+          <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+          <div><b>Location</b><span>Legaspi, Bicol Region, Philippines</span></div>
+        </div>
+        <div class="contact-item">
+          <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <div><b>Business Hours</b><span>Mon–Sat, 8:00 AM – 7:00 PM</span></div>
+        </div>
+      </div>
+      <form class="contact-form" id="contact-form" novalidate>
+        <div class="form-row">
+          <div class="field">
+            <label for="cf-name">Name</label>
+            <input type="text" id="cf-name" placeholder="Your full name" required>
+            <span class="field-error-msg">Please enter your name.</span>
+          </div>
+          <div class="field">
+            <label for="cf-email">Email</label>
+            <input type="email" id="cf-email" placeholder="you@example.com" required>
+            <span class="field-error-msg">Please enter a valid email.</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="cf-phone">Phone (optional)</label>
+          <input type="tel" id="cf-phone" placeholder="+63 9xx xxx xxxx">
+          <span class="field-error-msg">Please enter a valid phone number.</span>
+        </div>
+        <div class="field">
+          <label for="cf-message">Message</label>
+          <textarea id="cf-message" rows="4" placeholder="Tell us about the design you have in mind" required></textarea>
+          <span class="field-error-msg">Please enter a message.</span>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Send Message</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="index.html" class="brand"><span class="brand-mark">DT</span> DesignYourTaol</a>
+        <p>A 3D Coffin Customization and Design System — helping families design with clarity, not guesswork.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h5>Navigate</h5>
+          <a href="#home">Home</a>
+          <a href="#coffins">Coffins</a>
+          <a href="customize.html">Customize</a>
+          <a href="#how-it-works">How It Works</a>
+        </div>
+        <div class="footer-col">
+          <h5>Company</h5>
+          <a href="#about">About</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 DesignYourTaol. All rights reserved.</span>
+      <div class="social-row">
+        <a href="#" aria-label="Facebook"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+        <a href="#" aria-label="Instagram"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/></svg></a>
+        <a href="#" aria-label="Email"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M22 6l-10 7L2 6"/></svg></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ================= SCRIPTS ================= -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+<!-- 3D Coffin renderer — inline, no external deps -->
+<script>
+(function(){
+  /* Standing coffin — profile is the FRONT FACE silhouette [x=width, y=height] */
+  var PROFILE=[
+    [ 0.21, 1.00],[ 0.30, 0.76],[ 0.46, 0.37],[ 0.46, 0.00],
+    [ 0.40,-0.33],[ 0.32,-0.70],[ 0.20,-1.00],
+    [-0.20,-1.00],[-0.32,-0.70],[-0.40,-0.33],[-0.46, 0.00],
+    [-0.46, 0.37],[-0.30, 0.76],[-0.21, 1.00]
+  ];
+  var HH=0.19; /* half-depth (coffin thickness) */
+  var PRESETS=[
+    {name:'Premium Gold',   tag:'Luxury Ceremonial',    price:'₱42,000',
+     body:'#f2efe8',lid:'#faf7f0',dark:'#a89880',edge:'#d4af37',acc:'#d4af37',hc:'#e8c84a',hd:'#8a6010',
+     glow:[212,175,55]},
+    {name:'Royal Heritage', tag:'Luxury Mahogany',      price:'₱35,000',
+     body:'#ece0d2',lid:'#f0e8da',dark:'#9a8870',edge:'#c8a040',acc:'#d4a830',hc:'#d4a830',hd:'#886010',
+     glow:[200,150,60]},
+    {name:'Modern Serenity',tag:'Contemporary Minimal', price:'₱28,000',
+     body:'#ddeaf6',lid:'#e8f2fa',dark:'#8090a8',edge:'#a8c0d8',acc:'#b8ccd8',hc:'#c0ccd8',hd:'#607080',
+     glow:[100,170,230]}
+  ];
+
+  var cv,ctx,wrap,w=480,h=480,cx2=240,cy2=225;
+  var rotY=0,rotX=0.06,tRotY=0,tRotX=0.06,scrollOff=0,over=false,cur=0,cyc=null,going=false,tick=0;
+
+  var PARTS=[];
+  for(var i=0;i<30;i++) PARTS.push({x:Math.random(),y:Math.random(),r:Math.random()*1.5+0.4,spd:Math.random()*0.00035+0.00008,dr:(Math.random()-0.5)*0.00025,op:Math.random()*0.5+0.1,ph:Math.random()*Math.PI*2});
+
+  function rv(x,y,z,ry,rx){var c=Math.cos(ry),s=Math.sin(ry),x1=x*c+z*s,z1=-x*s+z*c,cr=Math.cos(rx),sr=Math.sin(rx);return[x1,y*cr-z1*sr,y*sr+z1*cr];}
+  /* y is negated: +y in 3D = top of screen (upright coffin) */
+  function pj(x,y,z){var d=2.5+z,s=Math.min(w,h)*0.66;return[cx2+x/d*s,cy2-y/d*s,z];}
+  function h2r(h){return[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];}
+  function tn(hex,f){var c=h2r(hex);return'rgb('+Math.round(Math.min(255,c[0]*f))+','+Math.round(Math.min(255,c[1]*f))+','+Math.round(Math.min(255,c[2]*f))+')';}
+  function pp(pts){ctx.beginPath();ctx.moveTo(pts[0][0],pts[0][1]);for(var i=1;i<pts.length;i++)ctx.lineTo(pts[i][0],pts[i][1]);ctx.closePath();}
+
+  function frame(){
+    requestAnimationFrame(frame);
+    tick+=0.012;
+    if(!over){var sw=Math.sin(tick*0.65)*0.50;rotY+=(sw-rotY)*0.04;}
+    else{rotY+=(tRotY-rotY)*0.07;}
+    rotX+=(tRotX-rotX)*0.07;
+    var ry=rotY,rx=rotX,p=PRESETS[cur],n=PROFILE.length;
+    var gl=p.glow,pulse=0.11+Math.sin(tick*0.9)*0.04;
+
+    ctx.clearRect(0,0,w,h);
+    ctx.fillStyle='#0c0c10'; ctx.fillRect(0,0,w,h);
+
+    var ag=ctx.createRadialGradient(cx2,cy2*0.9,0,cx2,cy2,w*0.68);
+    ag.addColorStop(0,'rgba('+gl[0]+','+gl[1]+','+gl[2]+','+(pulse)+')');
+    ag.addColorStop(0.45,'rgba('+gl[0]+','+gl[1]+','+gl[2]+',0.04)');
+    ag.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=ag; ctx.fillRect(0,0,w,h);
+
+    for(var i=0;i<PARTS.length;i++){
+      var pt=PARTS[i]; pt.y-=pt.spd; pt.x+=pt.dr;
+      if(pt.y<0){pt.y=1;pt.x=Math.random();}
+      var pop=pt.op*(0.55+Math.sin(tick*1.6+pt.ph)*0.45);
+      ctx.beginPath(); ctx.arc(pt.x*w,pt.y*h,pt.r,0,Math.PI*2);
+      ctx.fillStyle='rgba('+gl[0]+','+gl[1]+','+gl[2]+','+pop+')'; ctx.fill();
+    }
+
+    /* front/back faces of standing coffin */
+    var front=[],back=[];
+    for(var k=0;k<n;k++){
+      var px=PROFILE[k][0],py=PROFILE[k][1];
+      var tf=rv(px,py,HH,ry,rx); front.push(pj(tf[0],tf[1],tf[2]));
+      var tb=rv(px,py,-HH,ry,rx); back.push(pj(tb[0],tb[1],tb[2]));
+    }
+    var mx=0,my=0;
+    for(var i=0;i<n;i++){mx+=front[i][0];my+=front[i][1];} mx/=n;my/=n;
+
+    /* floor Y = bottom of coffin (max screen y) */
+    var fy=0;
+    for(var i=0;i<n;i++) fy=Math.max(fy,front[i][1],back[i][1]);
+    fy+=8;
+
+    /* floor glow */
+    var fg2=ctx.createRadialGradient(cx2,fy,0,cx2,fy,w*0.36);
+    fg2.addColorStop(0,'rgba('+gl[0]+','+gl[1]+','+gl[2]+','+(0.20+Math.sin(tick*0.9)*0.06)+')');
+    fg2.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=fg2; ctx.fillRect(0,fy-50,w,w*0.28);
+
+    /* floor reflection */
+    ctx.save(); ctx.globalAlpha=0.16;
+    for(var i=0;i<n;i++){
+      var j=(i+1)%n;
+      pp([[front[i][0],fy*2-front[i][1]],[front[j][0],fy*2-front[j][1]],[back[j][0],fy*2-back[j][1]],[back[i][0],fy*2-back[i][1]]]);
+      ctx.fillStyle=tn(p.body,0.65); ctx.fill();
+    }
+    pp(front.map(function(v){return[v[0],fy*2-v[1]];}));
+    ctx.fillStyle=p.lid; ctx.fill();
+    ctx.globalAlpha=1;
+    var rfg=ctx.createLinearGradient(0,fy,0,fy+h*0.22);
+    rfg.addColorStop(0,'rgba(12,12,16,0)'); rfg.addColorStop(1,'rgba(12,12,16,1)');
+    ctx.fillStyle=rfg; ctx.fillRect(0,fy,w,h*0.26);
+    ctx.restore();
+
+    /* floor shadow */
+    ctx.save(); ctx.translate(cx2,fy+2); ctx.scale(1,0.11);
+    ctx.beginPath(); ctx.arc(0,0,w*0.26,0,Math.PI*2);
+    ctx.fillStyle='rgba(0,0,0,0.85)'; ctx.fill(); ctx.restore();
+
+    /* side faces */
+    var sides=[];
+    for(var i=0;i<n;i++){
+      var j=(i+1)%n;
+      var az=(front[i][2]+front[j][2]+back[j][2]+back[i][2])/4;
+      var ex=PROFILE[j][0]-PROFILE[i][0],ey=PROFILE[j][1]-PROFILE[i][1];
+      var ln=Math.sqrt(ex*ex+ey*ey)||1;
+      var onx=-ey/ln,ony=ex/ln;
+      var rn=rv(onx,ony,0,ry,rx);
+      var lt=Math.max(0,rn[0]*0.55+rn[1]*0.15+rn[2]*0.80);
+      var sp=Math.pow(Math.max(0,rn[2]*0.95),10)*0.65;
+      sides.push({
+        pts:[[front[i][0],front[i][1]],[front[j][0],front[j][1]],[back[j][0],back[j][1]],[back[i][0],back[i][1]]],
+        az:az,lt:lt,sp:sp
+      });
+    }
+    sides.sort(function(a,b){return b.az-a.az;});
+    for(var s=0;s<sides.length;s++){
+      var f=sides[s],br=0.10+f.lt*0.90;
+      pp(f.pts); ctx.fillStyle=tn(p.body,br); ctx.fill();
+      if(f.sp>0.02){pp(f.pts);ctx.fillStyle='rgba(255,255,255,'+(f.sp*0.55)+')';ctx.fill();}
+      if(f.lt>0.55){pp(f.pts);ctx.strokeStyle='rgba('+gl[0]+','+gl[1]+','+gl[2]+',0.22)';ctx.lineWidth=0.8;ctx.stroke();}
+      else{pp(f.pts);ctx.strokeStyle='rgba(0,0,0,0.22)';ctx.lineWidth=0.5;ctx.stroke();}
+    }
+
+    /* handles on sides (3 per side, visible when rotated) */
+    var hYpos=[0.52,0.0,-0.52],sc2=Math.min(w,h)*0.66;
+    for(var hi=0;hi<hYpos.length;hi++){
+      var hR3=rv(0.50,hYpos[hi],0,ry,rx);
+      var hL3=rv(-0.50,hYpos[hi],0,ry,rx);
+      function dHand(pt3){
+        if(pt3[2]<0.03) return;
+        var hpt=pj(pt3[0],pt3[1],pt3[2]);
+        var hs=sc2/(2.5+pt3[2])*0.036;
+        ctx.beginPath(); ctx.ellipse(hpt[0],hpt[1],hs*0.65,hs*1.55,0,0,Math.PI*2);
+        var hgr=ctx.createRadialGradient(hpt[0]-hs*0.15,hpt[1]-hs*0.38,0,hpt[0],hpt[1],hs*1.9);
+        hgr.addColorStop(0,tn(p.hc,1.4)); hgr.addColorStop(1,p.hd);
+        ctx.fillStyle=hgr; ctx.fill();
+        ctx.strokeStyle=p.hd; ctx.lineWidth=0.8; ctx.stroke();
+        ctx.beginPath(); ctx.ellipse(hpt[0]-hs*0.12,hpt[1]-hs*0.38,hs*0.20,hs*0.44,0,0,Math.PI*2);
+        ctx.fillStyle='rgba(255,255,255,0.68)'; ctx.fill();
+      }
+      dHand(hR3); dHand(hL3);
+    }
+
+    /* front face — always most forward */
+    var fp=front.map(function(v){return[v[0],v[1]];});
+    pp(fp); ctx.fillStyle=p.lid; ctx.fill();
+    pp(fp); ctx.strokeStyle=p.edge; ctx.lineWidth=1.4; ctx.stroke();
+
+    var hg=ctx.createRadialGradient(mx-w*0.07,my-h*0.09,0,mx,my,Math.min(w,h)*0.44);
+    hg.addColorStop(0,'rgba(255,255,255,0.52)'); hg.addColorStop(0.3,'rgba(255,255,255,0.14)'); hg.addColorStop(1,'rgba(255,255,255,0)');
+    pp(fp); ctx.fillStyle=hg; ctx.fill();
+
+    var sg=ctx.createLinearGradient(mx-w*0.16,my-h*0.13,mx+w*0.04,my-h*0.03);
+    sg.addColorStop(0,'rgba(255,255,255,0)'); sg.addColorStop(0.42,'rgba(255,255,255,0.52)'); sg.addColorStop(1,'rgba(255,255,255,0)');
+    pp(fp); ctx.fillStyle=sg; ctx.fill();
+
+    var inn=fp.map(function(pt){return[pt[0]*0.80+mx*0.20,pt[1]*0.80+my*0.20];});
+    pp(inn); ctx.strokeStyle=p.acc; ctx.lineWidth=1.8; ctx.globalAlpha=0.82; ctx.stroke(); ctx.globalAlpha=1;
+
+    /* cross on upper front face */
+    var cs=Math.min(w,h)*0.042,cy_cross=my-h*0.07;
+    ctx.beginPath();
+    ctx.moveTo(mx-cs,cy_cross); ctx.lineTo(mx+cs,cy_cross);
+    ctx.moveTo(mx,cy_cross-cs*1.75); ctx.lineTo(mx,cy_cross+cs*1.75);
+    ctx.strokeStyle=p.acc; ctx.lineWidth=3.2; ctx.globalAlpha=0.82; ctx.stroke(); ctx.globalAlpha=1;
+
+    pp(fp); ctx.strokeStyle='rgba(255,255,255,0.38)'; ctx.lineWidth=1.2; ctx.stroke();
+
+    var vg=ctx.createRadialGradient(cx2,cy2,w*0.26,cx2,cy2,w*0.76);
+    vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(0,0,0,0.62)');
+    ctx.fillStyle=vg; ctx.fillRect(0,0,w,h);
+  }
+
+  function uiUpdate(i){
+    var p=PRESETS[i];
+    var nm=document.querySelector('.hero-coffin-name'),tg=document.querySelector('.hero-coffin-tagline'),pr=document.querySelector('.hero-coffin-price');
+    if(nm)nm.textContent=p.name; if(tg)tg.textContent=p.tag; if(pr)pr.textContent=p.price;
+    document.querySelectorAll('.coffin-dot').forEach(function(d,k){d.classList.toggle('active',k===i);});
+    document.querySelectorAll('.hero-preset-swatch').forEach(function(s,k){s.classList.toggle('active',k===i);});
+  }
+  function cycle(){if(cyc)clearInterval(cyc);cyc=setInterval(function(){cur=(cur+1)%3;uiUpdate(cur);},5000);}
+  function resize(){if(!wrap)return;var r=wrap.getBoundingClientRect();w=r.width||480;h=r.height||480;cv.width=w;cv.height=h;cx2=w*0.5;cy2=h*0.47;}
+
+  function start(){
+    wrap=document.getElementById('hero-visual');
+    cv=document.getElementById('hero-canvas');
+    if(!wrap||!cv)return;
+    ctx=cv.getContext('2d');
+    wrap.style.opacity='1';
+    resize();
+    uiUpdate(0);
+    window.addEventListener('resize',resize);
+    wrap.addEventListener('mousemove',function(e){var r=wrap.getBoundingClientRect();tRotY=((e.clientX-r.left)/r.width*2-1)*0.55;tRotX=((e.clientY-r.top)/r.height*2-1)*0.18+0.06;over=true;});
+    wrap.addEventListener('mouseleave',function(){tRotY=0;tRotX=0.06+scrollOff;over=false;});
+    document.querySelectorAll('.coffin-dot').forEach(function(d,i){d.addEventListener('click',function(){cur=i;uiUpdate(i);cycle();});});
+    if(!going){going=true;frame();}
+    cycle();
+    setTimeout(resize,200);
+  }
+
+  window.HeroCoffinSet    = function(i){ cur=i; uiUpdate(i); if(cyc)clearInterval(cyc); cycle(); };
+  window.HeroCoffinScroll = function(prog){ scrollOff = prog * 0.42; if(!over) tRotX = 0.06 + scrollOff; };
+
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',start);}else{start();}
+})();
+</script>
+
+<!-- ================= COFFIN DETAIL MODAL ================= -->
+<div id="coffin-modal" class="coffin-modal-overlay" role="dialog" aria-modal="true" aria-label="Coffin detail">
+  <div class="coffin-modal-card">
+    <button class="coffin-modal-close" aria-label="Close">&#x2715;</button>
+    <div class="coffin-modal-visual" id="coffin-modal-visual">
+      <canvas id="coffin-modal-canvas"></canvas>
+    </div>
+    <div class="coffin-modal-info">
+      <span class="coffin-modal-tag"></span>
+      <h2 class="coffin-modal-name"></h2>
+      <p class="coffin-modal-desc"></p>
+      <div class="coffin-modal-price-row">
+        <span class="coffin-modal-price-label">Starting at</span>
+        <span class="coffin-modal-price"></span>
+      </div>
+      <div class="coffin-modal-colors">
+        <span class="coffin-modal-colors-label">Choose color</span>
+        <div class="coffin-modal-swatches"></div>
+      </div>
+      <div class="coffin-modal-actions">
+        <a class="btn btn-primary" id="coffin-modal-cta" href="#">Customize This Coffin &#8594;</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= FLOATING MESSENGER ================= -->
+<a href="https://m.me/DesignYourTaol" target="_blank" rel="noopener noreferrer"
+   class="float-messenger" aria-label="Chat with us on Messenger">
+  <svg width="20" height="20" viewBox="0 0 48 48" fill="currentColor" aria-hidden="true">
+    <path d="M24 2C12.4 2 3 10.6 3 21.2c0 6.3 3.1 11.9 8 15.6v7.6l7.4-4c1.5.4 3.1.6 4.7.6 11.6 0 21-8.6 21-19.2S35.6 2 24 2zm2.1 25.8l-5.4-5.7-10.4 5.7 11.5-12.1 5.5 5.7 10.3-5.7-11.5 12.1z"/>
+  </svg>
+  <span>Chat kami</span>
+</a>
+
+<script>
+/* seed sample notifs so bell shows unread count on first visit */
+(function(){
+  try{
+    var SAMPLE=[
+      {id:'N-003',orderId:'ORD-2026-001',type:'ready',title:'Ready for pickup! 🎉',body:'',ts:'2026-11-16T10:30:00',read:false},
+      {id:'N-004',orderId:'ORD-2026-003',type:'progress',title:'Production started',body:'',ts:'2026-11-17T08:00:00',read:false},
+      {id:'N-002',orderId:'ORD-2026-001',type:'confirmed',title:'Order confirmed ✓',body:'',ts:'2026-11-01T09:15:00',read:true},
+      {id:'N-001',orderId:'ORD-2026-002',type:'completed',title:'Order completed ✓✓',body:'',ts:'2026-10-30T16:00:00',read:true}
+    ];
+    if(!localStorage.getItem('dyt_notifs')) localStorage.setItem('dyt_notifs',JSON.stringify(SAMPLE));
+    var ns=JSON.parse(localStorage.getItem('dyt_notifs'));
+    var cnt=ns.filter(function(n){return !n.read;}).length;
+    var badge=document.getElementById('notif-badge');
+    if(badge&&cnt){ badge.style.display=''; badge.textContent=cnt; }
+  }catch(e){}
+})();
+</script>
+<script src="js/data.js?v=5"></script>
+<script src="js/storage.js?v=5"></script>
+<script src="js/ui.js?v=5"></script>
+<script src="js/home.js?v=8"></script>
+</body>
+</html>

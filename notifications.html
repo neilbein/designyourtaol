@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notifications &amp; Orders — DesignYourTaol</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=5">
+<style>
+/* ---- page layout ---- */
+body{ background:#050606; }
+.notif-page{
+  min-height:100vh; padding-top:72px;
+  display:grid; grid-template-columns:380px 1fr; gap:0;
+  max-width:1300px; margin:0 auto;
+}
+/* ---- sidebar ---- */
+.notif-sidebar{
+  border-right:1px solid rgba(255,255,255,0.08);
+  display:flex; flex-direction:column; height:calc(100vh - 72px);
+  position:sticky; top:72px; overflow:hidden;
+}
+.sidebar-header{
+  padding:1.75rem 1.5rem 1rem;
+  border-bottom:1px solid rgba(255,255,255,0.07);
+  flex-shrink:0;
+}
+.sidebar-title{ font-family:'Manrope',sans-serif; font-size:1.25rem; font-weight:800; }
+.sidebar-unread{ font-size:0.78rem; color:#9AA6AD; margin-top:0.2rem; }
+/* summary cards */
+.summary-row{
+  display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;
+  padding:1rem 1.5rem; border-bottom:1px solid rgba(255,255,255,0.07);
+  flex-shrink:0;
+}
+.summary-card{
+  background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);
+  border-radius:10px; padding:0.85rem 1rem;
+}
+.summary-card .sc-label{ font-size:0.65rem; text-transform:uppercase; letter-spacing:0.07em; color:#9AA6AD; margin-bottom:0.3rem; }
+.summary-card .sc-value{ font-family:'Manrope',sans-serif; font-size:1.25rem; font-weight:800; }
+.summary-card .sc-value.green{ color:#00E676; }
+.summary-card .sc-value.gold{ color:#d4af37; }
+/* filter tabs */
+.notif-tabs{
+  display:flex; gap:0; padding:0.75rem 1.5rem 0;
+  border-bottom:1px solid rgba(255,255,255,0.07); flex-shrink:0;
+}
+.ntab{
+  font-size:0.78rem; font-weight:600; padding:0.45rem 0.85rem;
+  border-radius:6px 6px 0 0; cursor:pointer; color:#9AA6AD;
+  border:none; background:transparent; transition:color 0.18s, background 0.18s;
+  border-bottom:2px solid transparent; margin-bottom:-1px;
+}
+.ntab.active{ color:#E6EEF0; border-bottom-color:#00E676; }
+.ntab:hover:not(.active){ color:#E6EEF0; }
+/* notification list */
+.notif-list{ flex:1; overflow-y:auto; padding:0.5rem 0; }
+.notif-list::-webkit-scrollbar{ width:4px; }
+.notif-list::-webkit-scrollbar-track{ background:transparent; }
+.notif-list::-webkit-scrollbar-thumb{ background:rgba(255,255,255,0.12); border-radius:2px; }
+.notif-item{
+  display:flex; align-items:flex-start; gap:0.85rem;
+  padding:1rem 1.5rem; cursor:pointer;
+  border-left:3px solid transparent;
+  transition:background 0.18s, border-color 0.18s;
+  position:relative;
+}
+.notif-item:hover{ background:rgba(255,255,255,0.03); }
+.notif-item.active{ background:rgba(0,230,118,0.05); border-left-color:#00E676; }
+.notif-item.unread::after{
+  content:''; position:absolute; top:1rem; right:1.2rem;
+  width:7px; height:7px; border-radius:50%; background:#00E676;
+}
+.notif-icon{
+  width:38px; height:38px; border-radius:10px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1rem; flex-shrink:0; margin-top:1px;
+}
+.notif-icon.ready   { background:rgba(0,230,118,0.12); }
+.notif-icon.progress{ background:rgba(64,196,255,0.12); }
+.notif-icon.confirmed{background:rgba(212,175,55,0.12); }
+.notif-icon.completed{background:rgba(0,230,118,0.10); }
+.notif-icon.pending { background:rgba(255,194,75,0.12); }
+.notif-body{ flex:1; min-width:0; }
+.notif-body-title{ font-size:0.86rem; font-weight:600; margin-bottom:0.2rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.notif-body-sub{ font-size:0.76rem; color:#9AA6AD; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.notif-body-time{ font-size:0.68rem; color:#5E6A70; margin-top:0.25rem; }
+
+/* ---- main panel ---- */
+.notif-main{
+  padding:2rem 2.5rem; overflow-y:auto;
+  height:calc(100vh - 72px);
+}
+.notif-main::-webkit-scrollbar{ width:4px; }
+.notif-main::-webkit-scrollbar-thumb{ background:rgba(255,255,255,0.10); border-radius:2px; }
+/* empty state */
+.notif-empty{
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  height:100%; gap:1rem; color:#5E6A70; text-align:center;
+}
+.notif-empty svg{ opacity:0.3; }
+.notif-empty p{ font-size:0.9rem; }
+
+/* ---- receipt card ---- */
+.receipt-wrap{ max-width:620px; margin:0 auto; }
+.receipt-status-row{
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:1.5rem; flex-wrap:wrap; gap:0.75rem;
+}
+.receipt-status-row h2{ font-family:'Manrope',sans-serif; font-size:1.35rem; font-weight:800; }
+.status-pill{
+  display:inline-flex; align-items:center; gap:0.5rem;
+  padding:0.4rem 0.9rem; border-radius:50px; font-size:0.76rem; font-weight:700;
+  letter-spacing:0.04em; text-transform:uppercase;
+}
+.status-pill.ready    { background:rgba(0,230,118,0.14); color:#00E676; border:1px solid rgba(0,230,118,0.30); }
+.status-pill.completed{ background:rgba(0,230,118,0.10); color:#66FFB3; border:1px solid rgba(0,230,118,0.20); }
+.status-pill.in_progress{ background:rgba(64,196,255,0.14); color:#40C4FF; border:1px solid rgba(64,196,255,0.30); }
+.status-pill.confirmed{ background:rgba(212,175,55,0.14); color:#d4af37; border:1px solid rgba(212,175,55,0.30); }
+.status-pill.pending  { background:rgba(255,194,75,0.14); color:#FFC24B; border:1px solid rgba(255,194,75,0.30); }
+/* the receipt itself */
+.receipt{
+  background:#0F1518; border:1px solid rgba(255,255,255,0.10);
+  border-radius:16px; overflow:hidden;
+  box-shadow:0 24px 60px rgba(0,0,0,0.5);
+}
+.receipt-top{
+  background:linear-gradient(135deg,#0d1c24,#0a1520);
+  padding:2rem 2.5rem; display:flex; align-items:flex-start; justify-content:space-between;
+  border-bottom:1px solid rgba(255,255,255,0.08); flex-wrap:wrap; gap:1rem;
+}
+.receipt-brand{ display:flex; flex-direction:column; gap:0.3rem; }
+.receipt-brand-name{ font-family:'Manrope',sans-serif; font-size:1.1rem; font-weight:800; letter-spacing:0.03em; }
+.receipt-brand-name span{ color:#00E676; }
+.receipt-brand-sub{ font-size:0.72rem; color:#9AA6AD; letter-spacing:0.06em; text-transform:uppercase; }
+.receipt-meta{ text-align:right; }
+.receipt-meta .rm-label{ font-size:0.68rem; color:#9AA6AD; text-transform:uppercase; letter-spacing:0.06em; }
+.receipt-meta .rm-val{ font-family:'Manrope',sans-serif; font-size:0.92rem; font-weight:700; margin-bottom:0.5rem; }
+/* stamp */
+.receipt-stamp-wrap{ position:relative; padding:1.5rem 2.5rem 0; display:flex; justify-content:flex-end; }
+.receipt-stamp{
+  font-family:'Manrope',sans-serif; font-size:1.2rem; font-weight:800;
+  letter-spacing:0.12em; text-transform:uppercase;
+  padding:0.4rem 1.1rem; border-radius:6px; border:3px solid;
+  transform:rotate(-8deg); opacity:0.75;
+  display:inline-block;
+}
+.receipt-stamp.completed{ border-color:#00E676; color:#00E676; }
+.receipt-stamp.ready    { border-color:#00E676; color:#00E676; }
+.receipt-stamp.in_progress{ border-color:#40C4FF; color:#40C4FF; }
+.receipt-stamp.confirmed  { border-color:#d4af37; color:#d4af37; }
+.receipt-stamp.pending    { border-color:#FFC24B; color:#FFC24B; }
+/* body */
+.receipt-body{ padding:1.5rem 2.5rem 2rem; }
+.receipt-section{ margin-bottom:1.5rem; }
+.rs-label{
+  font-size:0.65rem; text-transform:uppercase; letter-spacing:0.1em;
+  color:#5E6A70; margin-bottom:0.75rem;
+  display:flex; align-items:center; gap:0.5rem;
+}
+.rs-label::after{ content:''; flex:1; height:1px; background:rgba(255,255,255,0.07); }
+.rs-grid{ display:grid; grid-template-columns:1fr 1fr; gap:0.5rem 1.5rem; }
+.rs-field{ display:flex; flex-direction:column; gap:0.15rem; }
+.rs-field .rsk{ font-size:0.72rem; color:#9AA6AD; }
+.rs-field .rsv{ font-size:0.9rem; font-weight:600; }
+/* line items */
+.receipt-items{ width:100%; border-collapse:collapse; }
+.receipt-items tr td{ padding:0.5rem 0; font-size:0.88rem; border-bottom:1px solid rgba(255,255,255,0.05); }
+.receipt-items tr:last-child td{ border-bottom:none; }
+.receipt-items .item-name{ color:#E6EEF0; }
+.receipt-items .item-price{ text-align:right; color:#E6EEF0; font-weight:600; white-space:nowrap; }
+.receipt-items .item-extra{ color:#9AA6AD; font-size:0.82rem; }
+.receipt-items .item-extra .item-price{ color:#9AA6AD; }
+.receipt-total-row{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:1.1rem 1.5rem; margin-top:1rem;
+  background:rgba(0,230,118,0.06); border:1px solid rgba(0,230,118,0.18);
+  border-radius:10px;
+}
+.receipt-total-label{ font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em; color:#9AA6AD; }
+.receipt-total-amount{ font-family:'Manrope',sans-serif; font-size:1.75rem; font-weight:800; color:#00E676; }
+/* pickup info */
+.receipt-pickup{
+  background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07);
+  border-radius:10px; padding:1rem 1.25rem;
+  display:flex; align-items:flex-start; gap:0.75rem; margin-top:1rem;
+}
+.receipt-pickup svg{ flex-shrink:0; margin-top:2px; color:#9AA6AD; }
+.pickup-text .pt-label{ font-size:0.68rem; text-transform:uppercase; letter-spacing:0.07em; color:#5E6A70; margin-bottom:0.2rem; }
+.pickup-text .pt-addr{ font-size:0.86rem; color:#E6EEF0; font-weight:500; }
+.pickup-text .pt-note{ font-size:0.78rem; color:#9AA6AD; margin-top:0.2rem; }
+/* actions */
+.receipt-actions{
+  display:flex; gap:0.75rem; padding:1.25rem 2.5rem 2rem;
+  border-top:1px solid rgba(255,255,255,0.07); flex-wrap:wrap;
+}
+.btn-print{
+  display:inline-flex; align-items:center; gap:0.5rem;
+  padding:0.65rem 1.25rem; border-radius:8px; font-size:0.84rem; font-weight:600;
+  background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.14); color:#E6EEF0;
+  cursor:pointer; transition:background 0.18s;
+}
+.btn-print:hover{ background:rgba(255,255,255,0.12); }
+
+/* ---- empty selected state ---- */
+.empty-select{
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  height:60%; gap:1.25rem; color:#5E6A70; text-align:center;
+}
+.empty-select .es-icon{ font-size:3rem; opacity:0.3; }
+.empty-select p{ font-size:0.9rem; max-width:260px; line-height:1.6; }
+
+/* ---- print styles ---- */
+@media print{
+  .notif-sidebar, .notif-tabs, .receipt-actions, .nav, #site-loader, .float-messenger, .summary-row, .sidebar-header{ display:none !important; }
+  .notif-page{ display:block; padding:0; }
+  .notif-main{ height:auto; overflow:visible; padding:0; }
+  .receipt{ box-shadow:none; border:1px solid #ccc; }
+  body{ background:#fff; color:#111; }
+  .receipt-brand-name span, .receipt-total-amount{ color:#006633; }
+}
+
+/* ---- responsive ---- */
+@media(max-width:860px){
+  .notif-page{ grid-template-columns:1fr; }
+  .notif-sidebar{ height:auto; position:static; border-right:none; border-bottom:1px solid rgba(255,255,255,0.08); }
+  .notif-list{ max-height:280px; }
+  .notif-main{ height:auto; }
+}
+</style>
+</head>
+<body>
+
+<!-- nav -->
+<nav class="nav" aria-label="Primary">
+  <div class="nav-inner">
+    <a href="index.html" class="brand"><span class="brand-mark">DT</span> DesignYourTaol</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html#coffins">Coffins</a></li>
+      <li><a href="customize.html">Customize</a></li>
+      <li><a href="notifications.html" class="active">Notifications</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="notifications.html" class="nav-notif-btn active" aria-label="Notifications">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span class="notif-badge" id="notif-badge" style="display:none">0</span>
+      </a>
+      <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<main class="notif-page">
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="notif-sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">Notifications</div>
+      <div class="sidebar-unread" id="sidebar-unread">Loading…</div>
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-card">
+        <div class="sc-label">Total Orders</div>
+        <div class="sc-value green" id="stat-orders">—</div>
+      </div>
+      <div class="summary-card">
+        <div class="sc-label">Total Spent</div>
+        <div class="sc-value gold" id="stat-total">—</div>
+      </div>
+    </div>
+
+    <div class="notif-tabs">
+      <button class="ntab active" data-filter="all">All</button>
+      <button class="ntab" data-filter="unread">Unread</button>
+      <button class="ntab" data-filter="completed">Completed</button>
+    </div>
+
+    <div class="notif-list" id="notif-list"></div>
+  </aside>
+
+  <!-- ===== MAIN ===== -->
+  <section class="notif-main" id="notif-main">
+    <div class="empty-select">
+      <div class="es-icon">🔔</div>
+      <p>Select a notification to see the full order details and receipt.</p>
+    </div>
+  </section>
+</main>
+
+<!-- floating messenger -->
+<a href="https://m.me/DesignYourTaol" target="_blank" rel="noopener noreferrer"
+   class="float-messenger" aria-label="Chat with us on Messenger">
+  <svg width="20" height="20" viewBox="0 0 48 48" fill="currentColor"><path d="M24 2C12.4 2 3 10.6 3 21.2c0 6.3 3.1 11.9 8 15.6v7.6l7.4-4c1.5.4 3.1.6 4.7.6 11.6 0 21-8.6 21-19.2S35.6 2 24 2zm2.1 25.8l-5.4-5.7-10.4 5.7 11.5-12.1 5.5 5.7 10.3-5.7-11.5 12.1z"/></svg>
+  <span>Chat kami</span>
+</a>
+
+<script>
+(function(){
+  /* ======================================================
+     MOCK DATA — replace with real API calls when backend exists
+     ====================================================== */
+  var SAMPLE_ORDERS = [
+    {
+      id:'ORD-2026-001',
+      coffin:'Premium Gold',
+      material:'Mahogany',
+      color:'Dark Brown',
+      dimensions:'185 × 65 × 45 cm',
+      extras:[
+        {name:'Gold Hardware Set',   price:1500},
+        {name:'Name Engraving',      price:1000},
+        {name:'Velvet Interior Lining', price:1500}
+      ],
+      basePrice:38000,
+      status:'ready',
+      orderedAt:'2026-11-01T09:00:00',
+      updatedAt:'2026-11-16T10:30:00',
+      pickup:'DesignYourTaol Showroom, Brgy. San Roque, Quezon City',
+      note:'Ready for viewing and final approval. Please bring a valid ID.'
+    },
+    {
+      id:'ORD-2026-002',
+      coffin:'Royal Heritage',
+      material:'Mahogany',
+      color:'Mahogany Red',
+      dimensions:'180 × 62 × 42 cm',
+      extras:[
+        {name:'Brass Hardware Set', price:1200},
+        {name:'Custom Cross Detail',price:800}
+      ],
+      basePrice:33000,
+      status:'completed',
+      orderedAt:'2026-10-20T14:00:00',
+      updatedAt:'2026-10-30T16:00:00',
+      pickup:'DesignYourTaol Showroom, Brgy. San Roque, Quezon City',
+      note:'Order completed and delivered.'
+    },
+    {
+      id:'ORD-2026-003',
+      coffin:'Modern Serenity',
+      material:'Engineered Wood',
+      color:'Matte Black',
+      dimensions:'183 × 60 × 40 cm',
+      extras:[
+        {name:'Stainless Steel Hardware', price:1000},
+        {name:'Foam Padding Upgrade',     price:700}
+      ],
+      basePrice:26300,
+      status:'in_progress',
+      orderedAt:'2026-11-15T11:00:00',
+      updatedAt:'2026-11-17T08:00:00',
+      pickup:'DesignYourTaol Showroom, Brgy. San Roque, Quezon City',
+      note:'Estimated completion: 3–5 business days.'
+    }
+  ];
+
+  var SAMPLE_NOTIFS = [
+    {id:'N-003',orderId:'ORD-2026-001',type:'ready',
+     title:'Ready for pickup! 🎉',
+     body:'Your Premium Gold coffin is finished. Come visit our showroom for final approval.',
+     ts:'2026-11-16T10:30:00',read:false},
+    {id:'N-004',orderId:'ORD-2026-003',type:'progress',
+     title:'Production started',
+     body:'Your Modern Serenity is now being crafted by our team.',
+     ts:'2026-11-17T08:00:00',read:false},
+    {id:'N-002',orderId:'ORD-2026-001',type:'confirmed',
+     title:'Order confirmed ✓',
+     body:'Your Premium Gold order has been received and confirmed.',
+     ts:'2026-11-01T09:15:00',read:true},
+    {id:'N-001',orderId:'ORD-2026-002',type:'completed',
+     title:'Order completed ✓✓',
+     body:'Your Royal Heritage order is fully completed.',
+     ts:'2026-10-30T16:00:00',read:true}
+  ];
+
+  var STATUS_INFO = {
+    pending:    {label:'Pending Review',    stamp:'PENDING',    dot:'#FFC24B'},
+    confirmed:  {label:'Order Confirmed',   stamp:'CONFIRMED',  dot:'#d4af37'},
+    in_progress:{label:'Being Made',        stamp:'IN PROGRESS',dot:'#40C4FF'},
+    ready:      {label:'Ready for Pickup',  stamp:'READY',      dot:'#00E676'},
+    completed:  {label:'Completed',         stamp:'COMPLETED',  dot:'#00E676'}
+  };
+
+  var TYPE_ICON = {
+    ready:'🏷', progress:'🔨', confirmed:'✅', completed:'✓✓', pending:'⏳'
+  };
+
+  /* ======================================================
+     LOCAL STORAGE
+     ====================================================== */
+  function load(key, fallback){
+    try{ var v=localStorage.getItem(key); return v?JSON.parse(v):fallback; }catch(e){ return fallback; }
+  }
+  function save(key, val){
+    try{ localStorage.setItem(key,JSON.stringify(val)); }catch(e){}
+  }
+
+  function getOrders(){
+    var o=load('dyt_orders',null);
+    if(!o){ save('dyt_orders',SAMPLE_ORDERS); return SAMPLE_ORDERS; }
+    return o;
+  }
+  function getNotifs(){
+    var n=load('dyt_notifs',null);
+    if(!n){ save('dyt_notifs',SAMPLE_NOTIFS); return SAMPLE_NOTIFS; }
+    return n;
+  }
+  function markRead(nid){
+    var ns=getNotifs().map(function(n){ return n.id===nid?Object.assign({},n,{read:true}):n; });
+    save('dyt_notifs',ns);
+    return ns;
+  }
+
+  /* ======================================================
+     HELPERS
+     ====================================================== */
+  function peso(n){ return '₱'+Number(n).toLocaleString('en-PH'); }
+  function fmtDate(ts){
+    var d=new Date(ts);
+    return d.toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'});
+  }
+  function fmtTime(ts){
+    var d=new Date(ts);
+    var now=new Date();
+    var diff=Math.floor((now-d)/1000);
+    if(diff<60) return 'Just now';
+    if(diff<3600) return Math.floor(diff/60)+' mins ago';
+    if(diff<86400) return Math.floor(diff/3600)+' hrs ago';
+    if(diff<172800) return 'Yesterday';
+    return fmtDate(ts);
+  }
+  function orderTotal(o){
+    return o.basePrice+(o.extras||[]).reduce(function(s,e){return s+e.price;},0);
+  }
+
+  /* ======================================================
+     RENDER NOTIFICATION LIST
+     ====================================================== */
+  var activeNid=null, activeFilter='all';
+
+  function renderList(){
+    var ns=getNotifs(), os=getOrders();
+    // filter
+    var filtered=ns.filter(function(n){
+      if(activeFilter==='unread') return !n.read;
+      if(activeFilter==='completed'){
+        var o=os.find(function(x){return x.id===n.orderId;});
+        return o&&o.status==='completed';
+      }
+      return true;
+    });
+
+    var ul=document.getElementById('notif-list');
+    ul.innerHTML='';
+    if(!filtered.length){
+      ul.innerHTML='<div style="padding:2rem 1.5rem;color:#5E6A70;font-size:0.85rem;text-align:center;">No notifications here.</div>';
+      return;
+    }
+    filtered.forEach(function(n){
+      var li=document.createElement('div');
+      li.className='notif-item'+(n.read?'':' unread')+(n.id===activeNid?' active':'');
+      li.dataset.id=n.id;
+      li.innerHTML=
+        '<div class="notif-icon '+n.type+'">'+( TYPE_ICON[n.type]||'🔔')+'</div>'+
+        '<div class="notif-body">'+
+          '<div class="notif-body-title">'+n.title+'</div>'+
+          '<div class="notif-body-sub">'+n.orderId+'</div>'+
+          '<div class="notif-body-time">'+fmtTime(n.ts)+'</div>'+
+        '</div>';
+      li.addEventListener('click',function(){ selectNotif(n.id); });
+      ul.appendChild(li);
+    });
+  }
+
+  /* ======================================================
+     RENDER RECEIPT / ORDER DETAIL
+     ====================================================== */
+  function selectNotif(nid){
+    activeNid=nid;
+    var ns=markRead(nid);
+    var n=ns.find(function(x){return x.id===nid;});
+    if(!n) return;
+    var o=getOrders().find(function(x){return x.id===n.orderId;});
+    if(!o) return;
+
+    renderList(); // refresh list (mark read)
+    updateBadge();
+
+    var total=orderTotal(o);
+    var si=STATUS_INFO[o.status]||STATUS_INFO['pending'];
+
+    var main=document.getElementById('notif-main');
+    main.innerHTML=
+      '<div class="receipt-wrap">'+
+        '<div class="receipt-status-row">'+
+          '<h2>'+o.coffin+'</h2>'+
+          '<span class="status-pill '+o.status+'">'+
+            '<svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="5" fill="currentColor"/></svg>'+
+            si.label+
+          '</span>'+
+        '</div>'+
+
+        '<div class="receipt">'+
+          /* top */
+          '<div class="receipt-top">'+
+            '<div class="receipt-brand">'+
+              '<div class="receipt-brand-name">Design<span>Your</span>Taol</div>'+
+              '<div class="receipt-brand-sub">Official Order Receipt</div>'+
+            '</div>'+
+            '<div class="receipt-meta">'+
+              '<div class="rm-label">Order No.</div>'+
+              '<div class="rm-val">#'+o.id+'</div>'+
+              '<div class="rm-label">Date Ordered</div>'+
+              '<div class="rm-val">'+fmtDate(o.orderedAt)+'</div>'+
+              '<div class="rm-label">Last Updated</div>'+
+              '<div class="rm-val">'+fmtDate(o.updatedAt)+'</div>'+
+            '</div>'+
+          '</div>'+
+
+          /* stamp */
+          '<div class="receipt-stamp-wrap">'+
+            '<span class="receipt-stamp '+o.status+'">'+si.stamp+'</span>'+
+          '</div>'+
+
+          /* body */
+          '<div class="receipt-body">'+
+            /* coffin details */
+            '<div class="receipt-section">'+
+              '<div class="rs-label">Coffin Details</div>'+
+              '<div class="rs-grid">'+
+                '<div class="rs-field"><span class="rsk">Model</span><span class="rsv">'+o.coffin+'</span></div>'+
+                '<div class="rs-field"><span class="rsk">Material</span><span class="rsv">'+o.material+'</span></div>'+
+                '<div class="rs-field"><span class="rsk">Color</span><span class="rsv">'+o.color+'</span></div>'+
+                '<div class="rs-field"><span class="rsk">Dimensions</span><span class="rsv">'+o.dimensions+'</span></div>'+
+              '</div>'+
+            '</div>'+
+
+            /* line items */
+            '<div class="receipt-section">'+
+              '<div class="rs-label">Itemized Charges</div>'+
+              '<table class="receipt-items">'+
+                '<tr><td class="item-name">'+o.coffin+' (Base)</td><td class="item-price">'+peso(o.basePrice)+'</td></tr>'+
+                (o.extras||[]).map(function(e){
+                  return '<tr><td class="item-extra">— '+e.name+'</td><td class="item-extra item-price">+'+peso(e.price)+'</td></tr>';
+                }).join('')+
+              '</table>'+
+            '</div>'+
+
+            /* total */
+            '<div class="receipt-total-row">'+
+              '<div>'+
+                '<div class="receipt-total-label">Total Amount</div>'+
+              '</div>'+
+              '<div class="receipt-total-amount">'+peso(total)+'</div>'+
+            '</div>'+
+
+            /* pickup */
+            '<div class="receipt-pickup">'+
+              '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>'+
+              '<div class="pickup-text">'+
+                '<div class="pt-label">Pickup / Visit Location</div>'+
+                '<div class="pt-addr">'+o.pickup+'</div>'+
+                '<div class="pt-note">'+o.note+'</div>'+
+              '</div>'+
+            '</div>'+
+          '</div>'+/* end receipt-body */
+
+          /* actions */
+          '<div class="receipt-actions">'+
+            '<button class="btn-print" onclick="window.print()">'+
+              '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>'+
+              'Print Receipt'+
+            '</button>'+
+            '<button class="btn-print" onclick="copyRef(\''+o.id+'\')">'+
+              '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>'+
+              'Copy Reference No.'+
+            '</button>'+
+          '</div>'+
+
+        '</div>'+/* end receipt */
+      '</div>';
+  }
+
+  function copyRef(ref){
+    try{ navigator.clipboard.writeText(ref); }catch(e){}
+    var btn=document.querySelector('.receipt-actions .btn-print:last-child');
+    if(btn){ var orig=btn.textContent; btn.textContent='Copied!'; setTimeout(function(){btn.textContent=orig;},1800); }
+  }
+  window.copyRef=copyRef;
+
+  /* ======================================================
+     STATS & BADGE
+     ====================================================== */
+  function updateStats(){
+    var os=getOrders();
+    var total=os.reduce(function(s,o){return s+orderTotal(o);},0);
+    document.getElementById('stat-orders').textContent=os.length;
+    document.getElementById('stat-total').textContent=peso(total);
+  }
+  function updateBadge(){
+    var cnt=getNotifs().filter(function(n){return !n.read;}).length;
+    var badge=document.getElementById('notif-badge');
+    var side=document.getElementById('sidebar-unread');
+    if(badge){ badge.style.display=cnt?'':'none'; badge.textContent=cnt; }
+    if(side) side.textContent=cnt?cnt+' unread notification'+(cnt>1?'s':''):' All caught up ✓';
+  }
+
+  /* ======================================================
+     FILTER TABS
+     ====================================================== */
+  document.querySelectorAll('.ntab').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      activeFilter=btn.dataset.filter;
+      document.querySelectorAll('.ntab').forEach(function(b){b.classList.remove('active');});
+      btn.classList.add('active');
+      renderList();
+    });
+  });
+
+  /* ======================================================
+     BOOT
+     ====================================================== */
+  function boot(){
+    updateStats();
+    updateBadge();
+    renderList();
+    /* auto-select first unread */
+    var first=getNotifs().find(function(n){return !n.read;});
+    if(first) selectNotif(first.id);
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+})();
+</script>
+</body>
+</html>

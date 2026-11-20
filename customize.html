@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Customize — DesignYourTaol</title>
+<meta name="description" content="Design your own coffin in a live 3D studio — color, material, handles, decorations, interior and more, updated instantly.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/animations.css">
+<link rel="stylesheet" href="css/customize.css">
+</head>
+<body class="studio-page">
+
+<!-- ================= TOP BAR ================= -->
+<div class="studio-topbar">
+  <div class="studio-topbar-left">
+    <a href="index.html" class="studio-back-btn" aria-label="Back to Home" title="Back to Home">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </a>
+    <a href="index.html" class="brand"><span class="brand-mark">DT</span></a>
+    <div class="design-name-wrap">
+      <input type="text" id="design-name-input" class="design-name-input" value="My Custom Coffin" aria-label="Design name">
+      <div class="design-meta-row">
+        <span><span class="status-dot"></span><span id="save-status-label">Unsaved</span></span>
+        <span id="meta-changes">0 changes</span>
+        <span id="meta-design-id">Not yet saved</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="studio-topbar-actions">
+    <!-- notification bell -->
+    <div class="studio-notif-wrap" id="studio-notif-wrap">
+      <button class="studio-notif-btn" id="studio-notif-btn" aria-label="Notifications" aria-expanded="false">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span class="studio-notif-badge" id="studio-notif-badge" style="display:none">0</span>
+      </button>
+      <div class="studio-notif-panel" id="studio-notif-panel" aria-hidden="true">
+        <div class="snp-header">
+          <span class="snp-title">Notifications</span>
+          <button class="snp-mark-all" id="snp-mark-all">Mark all read</button>
+        </div>
+        <div class="snp-list" id="snp-list">
+          <div class="snp-empty">No notifications yet.</div>
+        </div>
+        <a href="notifications.html" class="snp-footer">View all orders &amp; receipts →</a>
+      </div>
+    </div>
+    <button class="btn btn-ghost btn-sm" id="btn-reset"><span class="label">Reset</span></button>
+    <button class="btn btn-secondary btn-sm" id="btn-load"><span class="label">Load</span></button>
+    <button class="btn btn-secondary btn-sm" id="btn-save"><span class="label">Save</span></button>
+    <button class="btn btn-primary btn-sm" id="btn-finish"><span class="label">Finish</span></button>
+  </div>
+</div>
+
+<!-- ================= BODY ================= -->
+<div class="studio-body">
+
+  <!-- ---------- LEFT: customization controls ---------- -->
+  <aside class="panel panel-left mobile-open" aria-label="Customization controls">
+    <div class="panel-pad">
+      <div class="studio-steps" id="studio-steps"></div>
+      <div class="step-labels" id="step-labels"></div>
+
+      <!-- 01 MODEL -->
+      <div class="cat-group" id="cat-model">
+        <div class="cat-head"><span class="cat-title"><span class="cat-num">01</span> Model</span><span class="chev">▾</span></div>
+        <div class="cat-body"><div class="cat-body-inner">
+          <div id="model-options" class="chip-grid" style="grid-template-columns:1fr;"></div>
+        </div></div>
+      </div>
+
+      <!-- 02 COLOR -->
+      <div class="cat-group" id="cat-color">
+        <div class="cat-head"><span class="cat-title"><span class="cat-num">02</span> Color</span><span class="chev">▾</span></div>
+        <div class="cat-body"><div class="cat-body-inner">
+          <div id="color-swatches" class="swatch-row"></div>
+        </div></div>
+      </div>
+
+      <!-- 03 MATERIAL & FINISH -->
+      <div class="cat-group" id="cat-material">
+        <div class="cat-head"><span class="cat-title"><span class="cat-num">03</span> Material &amp; Finish</span><span class="chev">▾</span></div>
+        <div class="cat-body"><div class="cat-body-inner">
+          <div>
+            <div class="field-label">Material</div>
+            <div id="material-chips" class="chip-grid"></div>
+          </div>
+          <div class="range-wrap">
+            <div class="field-label">Gloss Level <span class="range-value" id="gloss-value">45%</span></div>
+            <input type="range" id="gloss-range" min="0" max="100" value="45">
+          </div>
+          <div>
+            <div class="field-label">Presets</div>
+            <div id="finish-presets" class="pill-group"></div>
+          </div>
+        </div></div>
+      </div>
+
+      <!-- 04 HANDLES -->
+      <div class="cat-group" id="cat-handles">
+        <div class="cat-head"><span class="cat-title"><span class="cat-num">04</span> Handles</span><span class="chev">▾</span></div>
+        <div class="cat-body"><div class="cat-body-inner">
+          <div id="handle-chips" class="chip-grid"></div>
+        </div></div>
+      </div>
+
+      <!-- 05 DECORATIONS -->
+      <div class="cat-group" id="cat-decorations">
+        <div class="cat-head"><span class="cat-title"><span class="cat-num">05</span> Decorations</span><span class="chev">▾</span></div>
+        <div class="cat-body"><div class="cat-body-inner">
+          <div id="decoration-toggles"></div>
+        </div></div>
+      </div>
+
+      <!-- 06 PATTERNS -->
+      <div class="cat-group" id="cat-patterns">
+        <div class="cat-head"><span class="cat-title"><span class="cat-num">06</span> Patterns</span><span class="chev">▾</span></div>
+        <div class="cat-body"><div class="cat-body-inner">
+          <div id="pattern-chips" class="chip-grid"></div>
+        </div></div>
+      </div>
+
+      <!-- 07 TEXT / NAME -->
+      <div class="cat-group" id="cat-text">
+        <div class="cat-head"><span class="cat-title"><span class="cat-num">07</span> Text / Name</span><span class="chev">▾</span></div>
+        <div class="cat-body"><div class="cat-body-inner">
+          <div class="text-input-wrap">
+            <input type="text" id="text-input" placeholder="Name or message" maxlength="28">
+            <div class="char-count" id="char-count">0 / 28</div>
+          </div>
+          <div>
+            <div class="field-label">Font</div>
+            <div id="text-font-pills" class="pill-group"></div>
+          </div>
+          <div>
+            <div class="field-label">Position</div>
+            <div id="text-position-pills" class="pill-group"></div>
+          </div>
+        </div></div>
+      </div>
+
+      <!-- 08 INTERIOR -->
+      <div class="cat-group" id="cat-interior">
+        <div class="cat-head"><span class="cat-title"><span class="cat-num">08</span> Interior</span><span class="chev">▾</span></div>
+        <div class="cat-body"><div class="cat-body-inner">
+          <div>
+            <div class="field-label">Interior Color</div>
+            <div id="interior-color-swatches" class="swatch-row"></div>
+          </div>
+          <div>
+            <div class="field-label">Interior Material</div>
+            <div id="interior-material-chips" class="chip-grid"></div>
+          </div>
+          <div>
+            <div class="field-label">Interior Style</div>
+            <div id="interior-style-pills" class="pill-group"></div>
+          </div>
+          <div id="pillow-toggle-wrap"></div>
+          <div>
+            <div class="field-label">Lid</div>
+            <div id="lid-state-pills" class="pill-group"></div>
+          </div>
+        </div></div>
+      </div>
+
+      <!-- 09 ACCESSORIES -->
+      <div class="cat-group" id="cat-accessories">
+        <div class="cat-head"><span class="cat-title"><span class="cat-num">09</span> Accessories</span><span class="chev">▾</span></div>
+        <div class="cat-body"><div class="cat-body-inner">
+          <div id="accessory-toggles"></div>
+        </div></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ---------- CENTER: 3D viewer ---------- -->
+  <main class="viewer-col" aria-label="3D coffin preview">
+    <canvas id="coffin-canvas"></canvas>
+
+    <div class="viewer-loading" id="viewer-loading">
+      <div class="loader-ring"></div>
+      <p id="viewer-ready-label">Preparing 3D Design Studio...</p>
+    </div>
+
+    <div class="studio-label">3D Design Studio</div>
+
+    <div class="viewer-topline">
+      <div class="badge-360 glass"><span class="ring"></span> 360° VIEW</div>
+      <button class="btn-icon" id="btn-help" aria-label="How to use the 3D viewer">?</button>
+    </div>
+
+    <div class="viewer-controls-right">
+      <button class="btn-icon" id="btn-zoom-in" aria-label="Zoom in">+</button>
+      <button class="btn-icon" id="btn-zoom-out" aria-label="Zoom out">−</button>
+      <button class="btn-icon" id="btn-reset-view" aria-label="Reset view">⟳</button>
+      <button class="btn-icon" id="btn-fullscreen" aria-label="Fullscreen 3D">⛶</button>
+    </div>
+
+    <div class="view-presets glass">
+      <button data-view="front">Front</button>
+      <button data-view="back">Back</button>
+      <button data-view="left">Left</button>
+      <button data-view="right">Right</button>
+      <button data-view="top">Top</button>
+      <button data-view="interior">Interior</button>
+    </div>
+
+    <div class="studio-mobile-tabs">
+      <button class="active" data-target="customize">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>
+        Customize
+      </button>
+      <button data-target="preview">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        Preview
+      </button>
+      <button data-target="summary">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        Summary
+      </button>
+    </div>
+  </main>
+
+  <!-- ---------- RIGHT: price + summary ---------- -->
+  <aside class="panel panel-right" aria-label="Price and design summary">
+    <div class="panel-pad">
+      <div class="price-box">
+        <div class="field-label" style="margin-bottom:.8rem;">Estimated Price</div>
+        <div id="price-breakdown"></div>
+        <div class="price-total-row">
+          <span class="label">Estimated Total</span>
+          <span class="total-val" id="price-total">₱0</span>
+        </div>
+      </div>
+
+      <div class="completion-box">
+        <div class="completion-label"><span>Design Completion</span><span id="completion-percent">0%</span></div>
+        <div class="completion-bar"><div class="completion-fill" id="completion-fill" style="width:0%;"></div></div>
+        <div class="completion-checks" id="completion-checks"></div>
+      </div>
+
+      <div>
+        <div class="field-label" style="margin-top:1.5rem;">Your Design</div>
+        <div class="summary-list" id="summary-list"></div>
+      </div>
+
+      <div class="right-actions">
+        <button class="btn btn-primary btn-block" id="btn-review">Review Design</button>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<!-- ================= MODAL: Load Design ================= -->
+<div class="modal-backdrop" id="modal-load" aria-hidden="true">
+  <div class="modal">
+    <button class="btn-icon modal-close" data-close-modal aria-label="Close">✕</button>
+    <div class="modal-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
+    <h3>Load Saved Design</h3>
+    <p>Continue working on your most recently saved design.</p>
+    <div id="load-modal-body"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" data-close-modal>Cancel</button>
+      <button class="btn btn-primary" id="btn-confirm-load">Load Design</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL: Reset Confirm ================= -->
+<div class="modal-backdrop" id="modal-reset" aria-hidden="true">
+  <div class="modal">
+    <button class="btn-icon modal-close" data-close-modal aria-label="Close">✕</button>
+    <div class="modal-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg></div>
+    <h3>Reset your current design?</h3>
+    <p>This will return every option to the default model. This can't be undone.</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" data-close-modal>Cancel</button>
+      <button class="btn btn-danger" id="btn-confirm-reset">Reset</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL: Review Design ================= -->
+<div class="modal-backdrop" id="modal-review" aria-hidden="true">
+  <div class="modal modal-lg">
+    <button class="btn-icon modal-close" data-close-modal aria-label="Close">✕</button>
+    <h3>Review Your Design</h3>
+    <p>Design Reference: <strong id="review-design-id">—</strong> · <span id="review-date">—</span></p>
+    <div class="grid review-grid" style="margin-top:1.2rem;">
+      <div class="review-visual">
+        <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--text-3);font-size:.8rem;">Live preview shown in the studio viewer</div>
+      </div>
+      <div>
+        <div class="summary-list" id="review-summary-list"></div>
+        <div class="price-total-row">
+          <span class="label">Estimated Total</span>
+          <span class="total-val" id="review-price-total">₱0</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" id="btn-edit-design">Edit Design</button>
+      <button class="btn btn-primary" id="btn-confirm-design">Confirm Design</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL: Quotation Submitted ================= -->
+<div class="modal-backdrop" id="modal-quotation" aria-hidden="true">
+  <div class="modal">
+    <div class="modal-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+    <h3>Design Submitted</h3>
+    <p>Your customized coffin design has been prepared for quotation.</p>
+    <div class="ref-code" id="quotation-ref">DYT-2026-00000</div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" id="btn-view-design">View Design</button>
+      <button class="btn btn-primary" id="btn-start-new">Start New Design</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL: Help ================= -->
+<div class="modal-backdrop" id="modal-help" aria-hidden="true">
+  <div class="modal">
+    <button class="btn-icon modal-close" data-close-modal aria-label="Close">✕</button>
+    <div class="modal-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 2-3 4"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+    <h3>How to use the 3D viewer</h3>
+    <p style="margin-top:.8rem;">
+      <strong>Desktop</strong><br>
+      Drag → Rotate · Scroll → Zoom · Right-click drag → Pan · Preset buttons → Jump to an angle
+    </p>
+    <p style="margin-top:.8rem;">
+      <strong>Mobile / Touch</strong><br>
+      One finger → Rotate · Pinch → Zoom · Two fingers → Pan
+    </p>
+    <div class="modal-actions">
+      <button class="btn btn-primary btn-block" data-close-modal>Got It</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= SCRIPTS ================= -->
+<script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+<script src="js/data.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/three-coffin.js"></script>
+<script src="js/customizer.js"></script>
+
+<script>
+/* ======== Studio notification bell ======== */
+(function(){
+  var btn   = document.getElementById('studio-notif-btn');
+  var panel = document.getElementById('studio-notif-panel');
+  var badge = document.getElementById('studio-notif-badge');
+  var list  = document.getElementById('snp-list');
+  var markAllBtn = document.getElementById('snp-mark-all');
+  if(!btn || !panel) return;
+
+  var TYPE_ICON = { ready:'🏷', progress:'🔨', confirmed:'✅', completed:'✓', pending:'⏳' };
+
+  function getNotifs(){
+    try{ return JSON.parse(localStorage.getItem('dyt_notifs')||'[]'); }catch(e){ return []; }
+  }
+  function saveNotifs(ns){ try{ localStorage.setItem('dyt_notifs',JSON.stringify(ns)); }catch(e){} }
+
+  function fmtTime(ts){
+    var d=new Date(ts), now=new Date(), diff=Math.floor((now-d)/1000);
+    if(diff<60) return 'Just now';
+    if(diff<3600) return Math.floor(diff/60)+'m ago';
+    if(diff<86400) return Math.floor(diff/3600)+'h ago';
+    if(diff<172800) return 'Yesterday';
+    return d.toLocaleDateString('en-PH',{month:'short',day:'numeric'});
+  }
+
+  function refresh(){
+    var ns = getNotifs();
+    var unread = ns.filter(function(n){ return !n.read; }).length;
+
+    /* update badge */
+    if(unread){ badge.textContent=unread; badge.style.display=''; btn.classList.add('has-unread'); }
+    else { badge.style.display='none'; btn.classList.remove('has-unread'); }
+
+    /* render list */
+    list.innerHTML = '';
+    if(!ns.length){
+      list.innerHTML = '<div class="snp-empty">No notifications yet.</div>';
+      return;
+    }
+    var recent = ns.slice(0,8);
+    recent.forEach(function(n){
+      var item = document.createElement('div');
+      item.className = 'snp-item' + (n.read ? '' : ' unread');
+      item.innerHTML =
+        '<div class="snp-icon '+(n.type||'pending')+'">'+(TYPE_ICON[n.type]||'🔔')+'</div>'+
+        '<div class="snp-body">'+
+          '<div class="snp-body-title">'+n.title+'</div>'+
+          '<div class="snp-body-sub">'+n.orderId+'</div>'+
+          '<div class="snp-body-time">'+fmtTime(n.ts)+'</div>'+
+        '</div>';
+      item.addEventListener('click', function(){
+        /* mark read */
+        var updated = getNotifs().map(function(x){ return x.id===n.id ? Object.assign({},x,{read:true}) : x; });
+        saveNotifs(updated);
+        refresh();
+        /* open full receipt in new tab */
+        window.open('notifications.html', '_blank');
+      });
+      list.appendChild(item);
+    });
+  }
+
+  /* toggle panel */
+  btn.addEventListener('click', function(e){
+    e.stopPropagation();
+    var open = panel.classList.toggle('open');
+    btn.setAttribute('aria-expanded', open);
+    panel.setAttribute('aria-hidden', !open);
+    if(open) refresh();
+  });
+
+  /* close on outside click */
+  document.addEventListener('click', function(e){
+    if(!panel.contains(e.target) && e.target !== btn){
+      panel.classList.remove('open');
+      btn.setAttribute('aria-expanded','false');
+    }
+  });
+
+  /* close on Escape */
+  document.addEventListener('keydown', function(e){
+    if(e.key==='Escape'){ panel.classList.remove('open'); btn.setAttribute('aria-expanded','false'); }
+  });
+
+  /* mark all read */
+  markAllBtn.addEventListener('click', function(){
+    var updated = getNotifs().map(function(n){ return Object.assign({},n,{read:true}); });
+    saveNotifs(updated);
+    refresh();
+  });
+
+  /* real-time polling — checks every 4 seconds for new notifications */
+  refresh();
+  setInterval(refresh, 4000);
+})();
+</script>
+</body>
+</html>
